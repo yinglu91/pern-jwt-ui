@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
 } from 'react-router-dom';
+import axios from 'axios';
 import './App.css';
 
 // components
@@ -18,6 +19,31 @@ const App = () => {
   const setAuth = (isAuth) => {
     setIsAuthenticated(isAuth);
   };
+
+  useEffect(() => {
+    const isAuth = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/auth/is-verify`,
+          {
+            headers: {
+              token: localStorage.getItem('token'),
+            },
+          }
+        );
+
+        if (response.status === 200 && response.data) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (err) {
+        console.error(err.message);
+      }
+    };
+
+    isAuth();
+  }, []);
 
   return (
     <>
