@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const Login = ({ setAuth }) => {
   const [formValues, setFormValues] = useState({
@@ -24,14 +25,20 @@ const Login = ({ setAuth }) => {
         formValues
       );
 
-      //console.log(response);
+      console.log(response);
       if (response.status === 200) {
         // status: 200, statusText: "OK"
+       
         localStorage.setItem('token', response.data.token);
         setAuth(true);
+        toast.success('Logged in Successfully');
+      } else {
+        setAuth(false);
+        toast.error(response.data);
       }
     } catch (err) {
-      console.log(err.message);
+      console.log(err.message); // 401
+      toast.error(err.message);
     }
   };
 
